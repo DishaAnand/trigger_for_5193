@@ -1,14 +1,17 @@
 const axios = require('axios');
 const twilio = require('twilio');
+require('dotenv').config();
 
 // Twilio credentials
-const accountSid = 'AC99801e14e0ccaa46a6e7a87e7489436a';
-const authToken = 'e2d3ed217a34db52c5fb444073ef2373';
+const accountSid = process.env.SID;
+const authToken = process.env.TOKEN;
 const fromPhoneNumber = '+12514511242';
 const toPhoneNumber = '+17828827136';
 
 // Initialize Twilio client
 const client = twilio(accountSid, authToken);
+
+console.log({ accountSid, authToken })
 
 // API endpoint
 const url = 'https://self-service.dal.ca/BannerExtensibility/internalPb/virtualDomains.dal_stuweb_academicTimetable?MjY%3DcGFnZV9zaXpl=MjE%3DOTk5OQ%3D%3D&MzI%3DdGVybXM%3D=ODg%3DMjAyNDMwOw%3D%3D&MzY%3Db2Zmc2V0=NDI%3DMA%3D%3D&Mzc%3DcGFnZV9udW0%3D=ODA%3DMQ%3D%3D&NDY%3DY3JzZV9udW1i=NTA%3Dnull&NTU%3DZGlzdHJpY3Rz=NDM%3DMTAwOzIwMDszMDA7NDAwOw%3D%3D&NzQ%3DbWF4=MjA%3DMTAwMA%3D%3D&ODI%3Dc3Vial9jb2Rl=Mg%3D%3DQ1NDSQ%3D%3D&encoded=true';
