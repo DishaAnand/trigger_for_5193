@@ -4,16 +4,16 @@ const axios = require('axios');
 const twilio = require('twilio');
 const bodyParser = require('body-parser');
 const moment = require('moment-timezone');
-const sse = require('express-sse');
+const SSE = require('express-sse');
 require('dotenv').config();
 
 const app = express();
 const port = 3000;
+const sse = new SSE();
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(sse());
 
 // Twilio credentials
 const accountSid = process.env.SID;
