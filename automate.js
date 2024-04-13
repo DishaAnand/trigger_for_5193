@@ -155,7 +155,7 @@ app.get('/', (req, res) => {
             function updateCountdown() {
                 const timeLeft = calculateTimeLeft();
                 const countdownElement = document.getElementById('countdown');
-                countdownElement.textContent = `Time left until next API call: ${timeLeft.minutes} minutes ${timeLeft.seconds} seconds`;
+                countdownElement.textContent = "Time left until next API call: " + timeLeft.minutes + " minutes " + timeLeft.seconds + " seconds";
             }
 
             // Update countdown every second
