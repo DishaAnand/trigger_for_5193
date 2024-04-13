@@ -3,7 +3,8 @@ const express = require('express');
 const axios = require('axios');
 const twilio = require('twilio');
 const bodyParser = require('body-parser');
-const moment = require('moment');
+const moment = require('moment-timezone');
+const sse = require('express-sse');
 require('dotenv').config();
 
 const app = express();
@@ -12,6 +13,7 @@ const port = 3000;
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(sse());
 
 // Twilio credentials
 const accountSid = process.env.SID;
@@ -31,6 +33,13 @@ let currentLength;
 let lastCheckedAt;
 let cronJobRunning = false;
 let job;
+
+// Global variables for status updates
+let currentStatus = {
+    currentLength,
+    lastCheckedAt: lastCheckedAt ? moment(lastCheckedAt).tz('America/Halifax').format('YYYY-MM-DD HH:mm:ss') : 'Not checked yet',
+    cronJobRunning
+};
 
 // Function to make voice call
 async function makeVoiceCall() {
@@ -62,6 +71,16 @@ async function checkResponseLength() {
         } else {
             console.log("Length of response has not increased. " + "current length: " + currentLength);
         }
+
+        // Update current status
+        currentStatus = {
+            currentLength,
+            lastCheckedAt: moment(lastCheckedAt).tz('America/Halifax').format('YYYY-MM-DD HH:mm:ss'),
+            cronJobRunning
+        };
+
+        // Broadcast status updates
+        sse.sendEvent('status', currentStatus);
     } catch (error) {
         console.error("Error occurred while fetching data:", error.message);
     }
@@ -83,21 +102,45 @@ function stopCronJob() {
 
 // Routes
 app.get('/', (req, res) => {
-    const data = {
-        currentLength,
-        lastCheckedAt: lastCheckedAt ? moment(lastCheckedAt).format('YYYY-MM-DD HH:mm:ss') : 'Not checked yet',
-        cronJobRunning
-    };
     res.send(`
         <h1>API Monitoring Service</h1>
-        <p>Current length of response: ${data.currentLength || 'Not available'}</p>
-        <p>Last checked at: ${data.lastCheckedAt}</p>
-        <p>Cron job running: ${data.cronJobRunning}</p>
+        <div id="status">
+            <p>Current length of response: ${currentStatus.currentLength || 'Not available'}</p>
+            <p>Last checked at: ${currentStatus.lastCheckedAt}</p>
+            <p>Cron job running: ${currentStatus.cronJobRunning}</p>
+        </div>
         <form action="/check" method="POST">
             <button type="submit">Check Now</button>
         </form>
         <button onclick="startCronJob()">Start Cron Job</button>
         <button onclick="stopCronJob()">Stop Cron Job</button>
+        <script>
+            function startCronJob() {
+                fetch('/start-cron-job', { method: 'POST' })
+                    .then(response => response.text())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error));
+            }
+
+            function stopCronJob() {
+                fetch('/stop-cron-job', { method: 'POST' })
+                    .then(response => response.text())
+                    .then(data => console.log(data))
+                    .catch(error => console.error(error));
+            }
+
+            // SSE event listener
+            const eventSource = new EventSource('/status');
+            eventSource.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                const statusDiv = document.getElementById('status');
+                statusDiv.innerHTML = `
+                    <p>Current length of response: ${data.currentLength || 'Not available'}</p>
+                    <p>Last checked at: ${data.lastCheckedAt}</p>
+                    <p>Cron job running: ${data.cronJobRunning}</p>
+                `;
+            };
+        </script>
     `);
 });
 
@@ -105,6 +148,18 @@ app.post('/check', (req, res) => {
     checkResponseLength();
     res.redirect('/');
 });
+
+app.post('/start-cron-job', (req, res) => {
+    startCronJob();
+    res.send('Cron job started');
+});
+
+app.post('/stop-cron-job', (req, res) => {
+    stopCronJob();
+    res.send('Cron job stopped');
+});
+
+app.get('/status', sse.init);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
