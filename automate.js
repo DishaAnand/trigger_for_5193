@@ -80,7 +80,7 @@ async function checkResponseLength() {
         };
 
         // Broadcast status updates
-        sse.sendEvent('status', currentStatus);
+        sse.send(currentStatus);
     } catch (error) {
         console.error("Error occurred while fetching data:", error.message);
     }
