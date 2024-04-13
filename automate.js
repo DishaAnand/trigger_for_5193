@@ -108,6 +108,7 @@ app.get('/', (req, res) => {
             <p>Current length of response: ${currentStatus.currentLength || 'Not available'}</p>
             <p>Last checked at: ${currentStatus.lastCheckedAt}</p>
             <p>Cron job running: ${currentStatus.cronJobRunning}</p>
+            <p id="countdown"></p> <!-- Countdown timer will be displayed here -->
         </div>
         <form action="/check" method="POST">
             <button type="submit">Check Now</button>
@@ -137,7 +138,28 @@ app.get('/', (req, res) => {
                 statusDiv.innerHTML = "<p>Current length of response: " + (data.currentLength || 'Not available') + "</p>" +
                     "<p>Last checked at: " + data.lastCheckedAt + "</p>" +
                     "<p>Cron job running: " + data.cronJobRunning + "</p>";
-            };
+            }
+
+            // Function to calculate time left until next API call
+            function calculateTimeLeft() {
+                const now = new Date();
+                const nextRun = new Date(now);
+                nextRun.setMinutes(nextRun.getMinutes() + 1);
+                const diff = Math.abs(nextRun - now) / 1000;
+                const minutes = Math.floor(diff / 60);
+                const seconds = Math.floor(diff % 60);
+                return { minutes, seconds };
+            }
+
+            // Function to update countdown timer in the UI
+            function updateCountdown() {
+                const timeLeft = calculateTimeLeft();
+                const countdownElement = document.getElementById('countdown');
+                countdownElement.textContent = `Time left until next API call: ${timeLeft.minutes} minutes ${timeLeft.seconds} seconds`;
+            }
+
+            // Update countdown every second
+            setInterval(updateCountdown, 1000);
         </script>
     `);
 });
