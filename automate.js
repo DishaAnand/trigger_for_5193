@@ -39,22 +39,25 @@ async function makeVoiceCall() {
 // Function to make API request and check response length
 async function checkResponseLength() {
     try {
-        const response = await axios.get(url, {
-            headers: {
-                'Accept': 'application/json, text/plain, /',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Connection': 'keep-alive',
-                'Cookie': 'JSESSIONID=A10F0FF11FB868969265E9EA52F5471F; _gcl_au=1.1.2017541632.1711712166; _ga_0HY41G82W8=GS1.2.1711713485.1.1.1711714166.0.0.0; _ga_9KVDMCX0SS=GS1.1.1711713484.1.1.1711715954.0.0.0; _gid=GA1.2.122377588.1712899122; _clck=1dm7pkh%7C2%7Cfkv%7C0%7C1549; _ga_574899B7C5=GS1.1.1712899122.5.0.1712899126.0.0.0; _ga_ZWDDEPWW2T=GS1.1.1712899127.8.1.1712899215.0.0.0; _ga=GA1.1.1718844392.1711712166; _uetsid=c0d2d1e0f90411ee8a6fc788da673d12; _uetvid=87ca0560edc011ee9d2391cbc69fe3e1; _clsk=b8260n%7C1712950940707%7C2%7C1%7Ch.clarity.ms%2Fcollect; _ga_10ZKDM5ZR2=GS1.1.1712950930.14.1.1712951658.0.0.0; _ga_03M7E9DG13=GS1.1.1712950930.10.1.1712951659.0.0.0; _ga_BMZTR0CC5Y=GS1.1.1712950930.9.1.1712951659.0.0.0',
-                'Referer': 'https://self-service.dal.ca/BannerExtensibility/customPage/page/dal.stuweb_academicTimetable',
-                'Sec-Fetch-Dest': 'empty',
-                'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Site': 'same-origin',
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-                'sec-ch-ua': '"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"macOS"'
-            }
-        });
+        const response = await axios.get(url
+        // ,
+        //                                  {
+        //     headers: {
+        //         'Accept': 'application/json, text/plain, /',
+        //         'Accept-Language': 'en-US,en;q=0.9',
+        //         'Connection': 'keep-alive',
+        //         'Cookie': 'JSESSIONID=A10F0FF11FB868969265E9EA52F5471F; _gcl_au=1.1.2017541632.1711712166; _ga_0HY41G82W8=GS1.2.1711713485.1.1.1711714166.0.0.0; _ga_9KVDMCX0SS=GS1.1.1711713484.1.1.1711715954.0.0.0; _gid=GA1.2.122377588.1712899122; _clck=1dm7pkh%7C2%7Cfkv%7C0%7C1549; _ga_574899B7C5=GS1.1.1712899122.5.0.1712899126.0.0.0; _ga_ZWDDEPWW2T=GS1.1.1712899127.8.1.1712899215.0.0.0; _ga=GA1.1.1718844392.1711712166; _uetsid=c0d2d1e0f90411ee8a6fc788da673d12; _uetvid=87ca0560edc011ee9d2391cbc69fe3e1; _clsk=b8260n%7C1712950940707%7C2%7C1%7Ch.clarity.ms%2Fcollect; _ga_10ZKDM5ZR2=GS1.1.1712950930.14.1.1712951658.0.0.0; _ga_03M7E9DG13=GS1.1.1712950930.10.1.1712951659.0.0.0; _ga_BMZTR0CC5Y=GS1.1.1712950930.9.1.1712951659.0.0.0',
+        //         'Referer': 'https://self-service.dal.ca/BannerExtensibility/customPage/page/dal.stuweb_academicTimetable',
+        //         'Sec-Fetch-Dest': 'empty',
+        //         'Sec-Fetch-Mode': 'cors',
+        //         'Sec-Fetch-Site': 'same-origin',
+        //         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+        //         'sec-ch-ua': '"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"',
+        //         'sec-ch-ua-mobile': '?0',
+        //         'sec-ch-ua-platform': '"macOS"'
+        //     }
+        // }
+                                        );
 
         // Length of the response
         const currentLength = response.data.length;
@@ -64,7 +67,7 @@ async function checkResponseLength() {
             await makeVoiceCall();
             prevLength = currentLength;
         } else {
-            console.log("Length of response has not increased.");
+            console.log("Length of response has not increased. " + "current length: "+ currentLength);
         }
     } catch (error) {
         console.error("Error occurred while fetching data:", error.message);
