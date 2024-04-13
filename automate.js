@@ -78,7 +78,7 @@ async function checkResponseLength() {
 setInterval(checkResponseLength, 30_000); // 30_000 milliseconds = 30 seconds
 
 app.get('/', (req, res) => {
-    res.send('API Monitoring Service');
+    res.send(`API Monitoring Service<br>Current length of response: ${currentLength}`);
 });
 
 app.listen(port, () => {
