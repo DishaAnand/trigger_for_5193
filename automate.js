@@ -108,7 +108,7 @@ app.get('/', (req, res) => {
             <p>Current length of response: ${currentStatus.currentLength || 'Not available'}</p>
             <p>Last checked at: ${currentStatus.lastCheckedAt}</p>
             <p>Cron job running: ${currentStatus.cronJobRunning}</p>
-            <p id="countdown"></p> <!-- Countdown timer will be displayed here -->
+            <p id="countdown"></p>
         </div>
         <form action="/check" method="POST">
             <button type="submit">Check Now</button>
