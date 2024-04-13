@@ -21,6 +21,7 @@ const url = 'https://self-service.dal.ca/BannerExtensibility/internalPb/virtualD
 
 // Previous length of response
 let prevLength = 95;
+let currentLength;
 
 // Function to make voice call
 async function makeVoiceCall() {
@@ -60,7 +61,7 @@ async function checkResponseLength() {
                                         );
 
         // Length of the response
-        const currentLength = response.data.length;
+        currentLength = response.data.length;
 
         // Check if length has increased
         if (currentLength > prevLength) {
