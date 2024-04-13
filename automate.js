@@ -86,7 +86,7 @@ async function checkResponseLength() {
     }
 }
 
-// Schedule the job to run every 2 minutes
+// Schedule the job to run every 1 minutes
 function startCronJob() {
     job = cron.schedule('*/1 * * * *', checkResponseLength);
     cronJobRunning = true;
@@ -134,11 +134,9 @@ app.get('/', (req, res) => {
             eventSource.onmessage = function(event) {
                 const data = JSON.parse(event.data);
                 const statusDiv = document.getElementById('status');
-                statusDiv.innerHTML = `
-                    <p>Current length of response: ${data.currentLength || 'Not available'}</p>
-                    <p>Last checked at: ${data.lastCheckedAt}</p>
-                    <p>Cron job running: ${data.cronJobRunning}</p>
-                `;
+                statusDiv.innerHTML = "<p>Current length of response: " + (data.currentLength || 'Not available') + "</p>" +
+                    "<p>Last checked at: " + data.lastCheckedAt + "</p>" +
+                    "<p>Cron job running: " + data.cronJobRunning + "</p>";
             };
         </script>
     `);
