@@ -52,6 +52,10 @@ async function makeVoiceCall() {
             from: fromPhoneNumber
         });
         console.log('Voice call initiated successfully.');
+        currentStatus = {
+            ...currentStatus,
+            newCoursesAvailable: true
+        };
     } catch (error) {
         console.error('Error initiating voice call:', error.message);
     }
@@ -111,6 +115,7 @@ app.get('/', (req, res) => {
             <p>Last checked at: ${currentStatus.lastCheckedAt}</p>
             <p>Cron job running: ${currentStatus.cronJobRunning}</p>
             <p id="countdown"></p>
+            ${currentStatus.newCoursesAvailable ? '<p style="color: green;">5193 AVAILABLE NOW</p>' : ''}
         </div>
         <form action="/check" method="POST">
             <button type="submit">Check Now</button>
