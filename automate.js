@@ -115,22 +115,8 @@ app.get('/', (req, res) => {
         <form action="/check" method="POST">
             <button type="submit">Check Now</button>
         </form>
-        <button onclick="startCronJob()">Start Cron Job</button>
-        <button onclick="stopCronJob()">Stop Cron Job</button>
+    
         <script>
-            function startCronJob() {
-                fetch('/start-cron-job', { method: 'POST' })
-                    .then(response => response.text())
-                    .then(data => console.log(data))
-                    .catch(error => console.error(error));
-            }
-
-            function stopCronJob() {
-                fetch('/stop-cron-job', { method: 'POST' })
-                    .then(response => response.text())
-                    .then(data => console.log(data))
-                    .catch(error => console.error(error));
-            }
 
             // SSE event listener
             const eventSource = new EventSource('/status');
