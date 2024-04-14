@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const express = require('express');
 const axios = require('axios');
 const twilio = require('twilio');
+const compression = require('compression');
 const bodyParser = require('body-parser');
 const moment = require('moment-timezone');
 const SSE = require('express-sse');
@@ -10,6 +11,7 @@ require('dotenv').config();
 const app = express();
 const port = 3000;
 const sse = new SSE();
+app.use(compression());
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
