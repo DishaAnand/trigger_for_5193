@@ -9,7 +9,7 @@ const SSE = require('express-sse');
 require('dotenv').config();
 
 const app = express();
-const port = 3000;
+const port = 80;
 const sse = new SSE();
 app.use(compression());
 
@@ -110,12 +110,13 @@ function stopCronJob() {
 app.get('/', (req, res) => {
     res.send(`
         <h1>API Monitoring Service</h1>
+        <h2 style="color: red">Not Available yet 😒</h2>
         <div id="status">
             <p>Current length of response: ${currentStatus.currentLength || 'Not available'}</p>
             <p>Last checked at: ${currentStatus.lastCheckedAt}</p>
             <p>Cron job running: ${currentStatus.cronJobRunning}</p>
             <p id="countdown"></p>
-            ${currentStatus.newCoursesAvailable ? '<p style="color: green;">5193 AVAILABLE NOW</p>' : ''}
+            ${currentStatus.newCoursesAvailable ? '<p style="color: green;">5193 AVAILABLE NOW 😰✅</p>' : ''}
         </div>
         <form action="/check" method="POST">
             <button type="submit">Check Now</button>
