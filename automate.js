@@ -160,17 +160,6 @@ app.get('/', (req, res) => {
                     "<p>Cron job running: " + data.cronJobRunning + "</p>" +
                     "<p>Current Enrollment: " + data.courseEnrollment + "</p>";
             }
-
-            // Function to calculate time left until next API call
-            function calculateTimeLeft() {
-                const now = new Date();
-                const nextRun = new Date(now);
-                nextRun.setMinutes(nextRun.getMinutes() + 1);
-                const diff = Math.abs(nextRun - now) / 1000;
-                const minutes = Math.floor(diff / 60);
-                const seconds = Math.floor(diff % 60);
-                return { minutes, seconds };
-            }
         </script>
     `);
 });
