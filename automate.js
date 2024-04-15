@@ -9,7 +9,7 @@ const SSE = require('express-sse');
 require('dotenv').config();
 
 const app = express();
-const port = 80;
+const port = 8080;
 const sse = new SSE();
 app.use(compression());
 
