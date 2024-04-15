@@ -92,7 +92,7 @@ async function checkResponseLength() {
             console.log("Length of response has not increased. " + "current length: " + currentLength);
         }
         
-        const courseEnrollment = findCourseEnrollment(response.data);
+        const courseEnrollment = await findCourseEnrollment(response.data);
         
         // Update current status
         currentStatus = {
