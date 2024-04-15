@@ -68,6 +68,12 @@ async function checkArrayOfObjects(array) {
     return false;
 }
 
+async function findCourseEnrollment(array) {
+    const course = array.find(obj => obj.CRSE_NUMB === "5193");
+    return parseInt(course.ENRL);
+}
+
+
 // Function to make API request and check response length
 async function checkResponseLength() {
     try {
@@ -85,12 +91,15 @@ async function checkResponseLength() {
         } else {
             console.log("Length of response has not increased. " + "current length: " + currentLength);
         }
-
+        
+        const courseEnrollment = findCourseEnrollment(response.data);
+        
         // Update current status
         currentStatus = {
             currentLength,
             lastCheckedAt: moment(lastCheckedAt).tz('America/Halifax').format('YYYY-MM-DD HH:mm:ss'),
-            cronJobRunning
+            cronJobRunning,
+            courseEnrollment
         };
 
         // Broadcast status updates
@@ -148,7 +157,8 @@ app.get('/', (req, res) => {
                 const statusDiv = document.getElementById('status');
                 statusDiv.innerHTML = "<p>Current length of response: " + (data.currentLength || 'Not available') + "</p>" +
                     "<p>Last checked at: " + data.lastCheckedAt + "</p>" +
-                    "<p>Cron job running: " + data.cronJobRunning + "</p>";
+                    "<p>Cron job running: " + data.cronJobRunning + "</p>" +
+                    "<p>Current Enrollment: " + data.courseEnrollment + "</p>";
             }
 
             // Function to calculate time left until next API call
