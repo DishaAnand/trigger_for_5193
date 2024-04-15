@@ -35,6 +35,7 @@ let currentLength;
 let lastCheckedAt;
 let cronJobRunning = false;
 let job;
+let seatFillingStarted;
 
 // Global variables for status updates
 let currentStatus = {
@@ -52,13 +53,19 @@ async function makeVoiceCall() {
             from: fromPhoneNumber
         });
         console.log('Voice call initiated successfully.');
-        currentStatus = {
-            ...currentStatus,
-            newCoursesAvailable: true
-        };
+        seatFillingStarted = true;
     } catch (error) {
         console.error('Error initiating voice call:', error.message);
     }
+}
+
+async function checkArrayOfObjects(array) {
+    for (const obj of array) {
+        if (obj.CRSE_NUMB === "5193" && parseInt(obj.ENRL) > 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 // Function to make API request and check response length
@@ -71,9 +78,10 @@ async function checkResponseLength() {
         lastCheckedAt = new Date();
 
         // Check if length has increased
-        if (currentLength > prevLength) {
+        const enrollmentStarted = await checkArrayOfObjects(response.data);
+        if (currentLength == 96 && enrollmentStarted) {
             await makeVoiceCall();
-            prevLength = currentLength;
+            seatFillingStarted = true;
         } else {
             console.log("Length of response has not increased. " + "current length: " + currentLength);
         }
@@ -92,9 +100,9 @@ async function checkResponseLength() {
     }
 }
 
-// Schedule the job to run every 1 minutes
+// Schedule the job to run every 10 sec
 function startCronJob() {
-    job = cron.schedule('*/1 * * * *', checkResponseLength);
+    job = cron.schedule('*/10 * * * * *', checkResponseLength);
     cronJobRunning = true;
 }
 
@@ -110,20 +118,16 @@ function stopCronJob() {
 app.get('/', (req, res) => {
     res.send(`
         <h1>API Monitoring Service</h1>
-        <h2 style="color: red">Not Available yet 😒</h2>
+        ${!seatFillingStarted ? '<h2 style="color: red">Not Available yet 😒</h2>' : '<p style="color: green;">5193 AVAILABLE NOW 😰✅</p>'}
         <div id="status">
             <p>Current length of response: ${currentStatus.currentLength || 'Not available'}</p>
             <p>Last checked at: ${currentStatus.lastCheckedAt}</p>
             <p>Cron job running: ${currentStatus.cronJobRunning}</p>
             <p id="countdown"></p>
-            ${currentStatus.newCoursesAvailable ? '<p style="color: green;">5193 AVAILABLE NOW 😰✅</p>' : ''}
         </div>
         <form action="/check" method="POST">
             <button type="submit">Check Now</button>
         </form>
-        <button onclick="startCronJob()">Start Cron Job</button>
-        <button onclick="stopCronJob()">Stop Cron Job</button>
-    
         <script>
             function startCronJob() {
                 fetch('/start-cron-job', { method: 'POST' })
